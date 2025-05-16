@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 /**
  * Read environment variables from file.
@@ -6,7 +8,17 @@ import { defineConfig, devices } from '@playwright/test';
  */
 import dotenv from "dotenv";
 import path from "path";
+// Get the current file path
+const __filename = fileURLToPath(import.meta.url);
+// Get the directory name
+const __dirname = dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, ".env") });
+const env = process.env.NODE_ENV || "local";
+
+// Dynamically load the matching config module
+console.log("./config." + `${env}.ts`);
+const configModule = await import("./config." + `${env}.ts`);
+const envConfig = configModule.default;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -34,52 +46,65 @@ export default defineConfig({
       args: ["--start-maximized"],
     },
     baseURL: process.env.baseurl,
-    headless: true,
+    headless: false,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+
+    /* Take screenshot when test case fails which will be stored inside screenshots folder */
+    screenshot: "only-on-failure",
   },
 
-  /* Configure projects for major browsers */
-  projects: [
-    {
-      name: "chromium",
-      use: {
-        ...devices["Desktop Chrome"],
-      },
-      fullyParallel: true,
-      retries: 3,
-    },
+  ...envConfig,
+});
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
 
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
 
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
-  ],
+
+
+
+/* This is to configure multiple browsers to cross browser testing */
+ /* Configure projects for major browsers */
+  // projects: [
+  // {
+  //   name: "chromium",
+  //   use: {
+  //     ...devices["Desktop Chrome"],
+  //   },
+  //   fullyParallel: true,
+  //   retries: 3,
+  // },
+
+  // {
+  //   name: 'firefox',
+  //   use: { ...devices['Desktop Firefox'] },
+  // },
+
+  // {
+  //   name: 'webkit',
+  //   use: { ...devices['Desktop Safari'] },
+  // },
+
+  /* Test against mobile viewports. */
+  // {
+  //   name: 'Mobile Chrome',
+  //   use: { ...devices['Pixel 5'] },
+  // },
+  // {
+  //   name: 'Mobile Safari',
+  //   use: { ...devices['iPhone 12'] },
+  // },
+
+  /* Test against branded browsers. */
+  // {
+  //   name: 'Microsoft Edge',
+  //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+  // },
+  // {
+  //   name: 'Google Chrome',
+  //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+  // },
+  // ],
 
   /* Run your local dev server before starting the tests */
   // webServer: {
@@ -87,4 +112,3 @@ export default defineConfig({
   //   url: 'http://127.0.0.1:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
-});

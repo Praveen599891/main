@@ -25,7 +25,58 @@ set fullyparallel:true inside projects.use for browser  options<br/><br/>
   ```
 
 ## Cross Browser testing
+Add browser and capabilities required for each browser inside playwright.config.ts as below
+```javascript
+ projects: [
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+      },
+      fullyParallel: true,
+      retries: 3,
+    },
 
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+      fullyParallel: true,
+      retries:3
+    },
+
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+      fullyParallel:true,
+      retries:3
+    },
+
+    /* Test against mobile viewports. */
+    {
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 5'] },
+      fullyParallel:true,
+      retries:3
+    },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 12'] },
+      fullyParallel:true,
+      retries:3
+    },
+
+    /* Test against branded browsers. */
+    {
+      name: 'Microsoft Edge',
+      use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    },
+    {
+      name: 'Google Chrome',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    },
+  ],
+
+```
 
 ## Code Quality
 ## API Mocking / Stubing
@@ -33,6 +84,16 @@ set fullyparallel:true inside projects.use for browser  options<br/><br/>
  Refer Readme.md file(this file for reference of documentation about framework)<br/><br/><br/><br/>
 
 ## Reporting / Logging
+Install @playwright/test allure-playwright
+Then add reporter config inside defaultconfig
+
+```javascript
+  npm install --save-dev@playwright/test allure-playwright 
+  reporter: [["line"], ["allure-playwright"]], 
+  ```
+
+<br/>
+
 ## CI/CD Integration
 
 
@@ -124,3 +185,15 @@ const screenHeight = 816; // Replace with actual screen height
 
 ### Drag and Drop
 
+
+
+
+
+
+
+
+
+
+
+#Project
+1. Project uses esm module for the whole project
