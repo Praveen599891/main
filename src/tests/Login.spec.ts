@@ -1,7 +1,7 @@
 import { test, type expect, type Page } from "@playwright/test";
-import LoginPage from "../src/page/LoginPage.ts";
-import BlockStreamPage from "../src/page/BlockStreamPage.ts";
-import CommonPage from "../src/page/CommonPage.ts";
+import LoginPage from "../page/LoginPage.js";
+import BlockStreamPage from "../page/BlockStreamPage.js";
+import CommonPage from "../page/CommonPage.js";
 
 test.describe("Verify Login", () => {
   test("Login and verify homepage", async ({ page }) => {
